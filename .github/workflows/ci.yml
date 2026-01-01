@@ -5,9 +5,19 @@ on:
     branches: ["master"]
   pull_request:
     branches: ["master"]
+  workflow_dispatch:
 
 jobs:
+  xxx:
+    environment: czekaj
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "xxx"
+
   build:
+    needs: xxx
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +33,3 @@ jobs:
 
       - name: Uruchom testy
         run: npm test
-
-  xxx:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: echo "xxx"
