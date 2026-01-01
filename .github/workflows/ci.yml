@@ -41,7 +41,7 @@ jobs:
       - name: "Zbieranie wynikow testów"
         id: test-results
         run: |
-          if [ "${{steps.test.outcome}}" === "success"]; then
+          if [ "${{steps.test.outcome}}" === "success" ]; then
             echo "test_result=passed" >> $GITHUB_OUTPUT
           else 
             echo "test_results=failed" >> $GITHUB_OUTPUT
