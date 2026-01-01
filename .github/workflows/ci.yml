@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: "Sprawdza wynik testów"
         run: |
-          echo "Status testów z poprzedniego joba: ${{ needs.build.outputs.results }}"
-          if [ "${{ needs.build.outputs.results }}" == 'failed' ]; then
+          echo "Status testów z poprzedniego joba: ${{ needs.build.outputs.test_results }}"
+          if [ "${{ needs.build.outputs.test_results }}" == 'failed' ]; then
             echo "Testy nie powiodły się"
           fi
