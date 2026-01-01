@@ -23,3 +23,9 @@ jobs:
 
       - name: Uruchom testy
         run: npm test
+
+  xxx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "xxx"
