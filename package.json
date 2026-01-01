@@ -1,0 +1,42 @@
+{
+  "name": "package-recipe",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/gesiud/package-recipe#readme",
+  "bugs": {
+    "url": "https://github.com/gesiud/package-recipe/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gesiud/package-recipe.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest && make-coverage-badge"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "make-coverage-badge": "^1.2.0"
+  },
+  "jest": {
+    "verbose": true,
+    "coverageReporters": [
+      "json-summary",
+      [
+        "text",
+        {
+          "file": "coverage.txt",
+          "patch": "./coverage"
+        }
+      ],
+      "lcov"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "./src/**"
+    ]
+  }
+}
