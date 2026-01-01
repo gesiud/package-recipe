@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      results: ${{ steps.test.outputs.test }}
+      results: ${{ steps.test.outputs.test_results }}
 
     steps:
       - uses: actions/checkout@v4
