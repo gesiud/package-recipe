@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      results: ${{ steps.test.outputs.test_results }}
+      test_results: ${{ steps.test-results.outputs.test_results }}
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
         id: test-results
         run: |
           if [ "${{steps.test.outcome}}" == "success" ]; then
-            echo "test_result=passed" >> $GITHUB_OUTPUT
+            echo "test_results=passed" >> $GITHUB_OUTPUT
           else 
             echo "test_results=failed" >> $GITHUB_OUTPUT
           fi
