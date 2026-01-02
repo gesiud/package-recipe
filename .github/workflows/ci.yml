@@ -18,15 +18,15 @@ jobs:
   build:
     needs: pre-build
     runs-on: ubuntu-latest
-    env:
-      node-version: '["22.x", "21.x"]'
-      MAIN_VERSION: "${{ fromJson(env.node-version)[0] }}"
     strategy:
       matrix:
-        node-version: ${{ fromJson(env.node-version) }}
+        node-version: ["22.x", "21.x"]
 
     permissions:
       pull-requests: write
+
+    env:
+      MAIN_VERSION: "22.x"
 
     outputs:
       test_results: ${{ steps.test-results.outputs.test_results }}
@@ -46,6 +46,22 @@ jobs:
         id: test
         run: npm test
         continue-on-error: true
+
+      - name: przygotowanie raportu pokrycia w języku Markdown
+        uses: fingerprintjs/action-coverage-report-md@v1.0.6
+        id: coverage
+        with:
+          textReportPath: coverage/coverage.txt
+
+      - name: Dodanie komentarza pokrycia  do pre
+        uses: marocchino/sticky-pull-request-comment@v2.8.0
+        with:
+          message: ${{ steps.coverage.outputs.markdownReport }}
+
+      - name: Dodaj raport pokrycia do kodu podsumowania zadania
+        run: |
+          echo "## Code coverage v${{ matrix.node-version }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.coverage.outputs.markdownReport }}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: "Zbieranie wynikow testów"
         id: test-results
