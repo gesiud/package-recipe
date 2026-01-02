@@ -34,9 +34,10 @@ jobs:
         run: npm install
 
       - name: Uruchom testy
+        if: always()
         id: test
         run: npm test
-        continue-on-error: true
+        # continue-on-error: true
 
       - name: "Zbieranie wynikow testów"
         id: test-results
