@@ -60,3 +60,10 @@ jobs:
           if [ "${{ needs.build.outputs.test_results }}" == 'failed' ]; then
             echo "Testy nie powiodły się"
           fi
+
+  results2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Sprawdza czy sie wykonało"
+        run: |
+          echo "SIe wykonało"
