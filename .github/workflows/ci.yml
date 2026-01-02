@@ -48,7 +48,7 @@ jobs:
             echo "test_results=failed" >> $GITHUB_OUTPUT
           fi
 
-  reults:
+  results:
     needs: build
     if: always()
     runs-on: ubuntu-latest
@@ -62,7 +62,9 @@ jobs:
           fi
 
   results2:
+    needs: results
     runs-on: ubuntu-latest
+
     steps:
       - name: "Sprawdza czy sie wykonało"
         run: |
