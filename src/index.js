@@ -1,3 +1,3 @@
 module.exports = function greet() {
-  return "Witaj świecie";
+  return "Witaj świecie!";
 };
