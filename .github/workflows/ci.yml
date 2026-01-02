@@ -8,17 +8,20 @@ on:
   workflow_dispatch:
 
 jobs:
-  xxx:
+  pre-build:
     environment: czekaj
 
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "xxx"
+      - run: echo "samo echo dla ${{github.repository_owner}}"
 
   build:
-    needs: xxx
+    needs: pre-build
     runs-on: ubuntu-latest
+
+    outputs:
+      test_results: ${{ steps.test-results.outputs.test_results }}
 
     steps:
       - uses: actions/checkout@v4
@@ -32,4 +35,37 @@ jobs:
         run: npm install
 
       - name: Uruchom testy
+        id: test
         run: npm test
+        continue-on-error: true
+
+      - name: "Zbieranie wynikow testów"
+        id: test-results
+        run: |
+          if [ "${{steps.test.outcome}}" == "success" ]; then
+            echo "test_results=passed" >> $GITHUB_OUTPUT
+          else 
+            echo "test_results=failed" >> $GITHUB_OUTPUT
+          fi
+
+  results:
+    needs: build
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Sprawdza wynik testów"
+        run: |
+          echo "Status testów z poprzedniego joba: ${{ needs.build.outputs.test_results }}"
+          if [ "${{ needs.build.outputs.test_results }}" == 'failed' ]; then
+            echo "Testy nie powiodły się"
+          fi
+
+  results2:
+    needs: results
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Sprawdza czy sie wykonało"
+        run: |
+          echo "SIe wykonało"
