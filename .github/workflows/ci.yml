@@ -8,7 +8,7 @@ on:
 
 jobs:
   pre-build:
-    environment: czekaj
+    # environment: czekaj
 
     runs-on: ubuntu-latest
 
@@ -21,6 +21,12 @@ jobs:
     strategy:
       matrix:
         node-version: ["22.x", "21.x"]
+
+    permissions:
+      pull-requests: write
+
+    env:
+      MAIN_VERSION: "22.x"
 
     outputs:
       test_results: ${{ steps.test-results.outputs.test_results }}
@@ -41,6 +47,22 @@ jobs:
         run: npm test
         continue-on-error: true
 
+      - name: przygotowanie raportu pokrycia w języku Markdown
+        uses: fingerprintjs/action-coverage-report-md@v1.0.6
+        id: coverage
+        with:
+          textReportPath: coverage/coverage.txt
+
+      - name: Dodanie komentarza pokrycia  do pre
+        uses: marocchino/sticky-pull-request-comment@v2.8.0
+        with:
+          message: ${{ steps.coverage.outputs.markdownReport }}
+
+      - name: Dodaj raport pokrycia do kodu podsumowania zadania
+        run: |
+          echo "## Code coverage v${{ matrix.node-version }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "${{ steps.coverage.outputs.markdownReport }}" >> "$GITHUB_STEP_SUMMARY"
+
       - name: "Zbieranie wynikow testów"
         id: test-results
         run: |
@@ -49,6 +71,34 @@ jobs:
           else 
             echo "test_results=failed" >> $GITHUB_OUTPUT
           fi
+
+      - name: przeslij do serwera
+        if: ${{ matrix.node-version == env.MAIN_VERSION }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: coverage
+
+  deploy:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: "strony"
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: "${{ steps.deployment.outputs.page_url }}lcov-report"
+    steps:
+      - name: Strony konfiguracji
+        uses: actions/configure-pages@v4
+
+      - name: Wdrazaj na stronach Githuba
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   results:
     needs: build
