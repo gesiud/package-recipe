@@ -1,3 +1,3 @@
 # package-recipe
 
-![master](https://github.com/gesiud/package-recipe/actions/workflows/ci.yml/badge.svg?branch=master)
+[![Coverage](https://gesiud.github.io/package-recipe/badge.svg)](https://gesiud.github.io/package-recipe/lcov-report)
