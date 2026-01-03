@@ -44,7 +44,7 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: "javascript-typescript"
-          queries: sequrity-and-quality
+          queries: security-and-quality
 
       - name: Wykonaj analizę kodu
         uses: github/codeql-action/analyze@v3
