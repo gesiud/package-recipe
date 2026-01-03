@@ -24,6 +24,7 @@ jobs:
 
     permissions:
       pull-requests: write
+      security-events: write
 
     env:
       MAIN_VERSION: "22.x"
@@ -38,6 +39,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+
+      - name: Zainicjuj CodeQl
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "javascript-typescript"
+          queries: security-and-quality
+
+      - name: Wykonaj analizę kodu
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "language:javascript-typescript"
 
       - name: "Zainstaluj zależności"
         run: npm install
