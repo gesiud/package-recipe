@@ -72,6 +72,34 @@ jobs:
             echo "test_results=failed" >> $GITHUB_OUTPUT
           fi
 
+      - name: przeslij do serwera
+        if: ${{ matrix.node-version == env.MAIN_VERSION }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: coverage
+
+  deploy:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: "strony"
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: "${{ steps.deployment.outputs.page_url }}lcov-report"
+    steps:
+      - name: Strony konfiguracji
+        uses: actions/configure-pages@v4
+
+      - name: Wdrazaj na stronach Githuba
+        id: deployment
+        uses: actions/deploy-pages@v4
+
   results:
     needs: build
     if: always()
