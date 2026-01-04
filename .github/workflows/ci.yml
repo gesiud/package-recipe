@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: ["master"]
 
-env:
-  VERSIONS: '["22.x", "21.x"]'
-
 jobs:
   pre-build:
     # environment: czekaj
@@ -23,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ${{ fromJson(env.VERSIONS) }}
+        node-version: ["22.x", "21.x"]
 
     permissions:
       pull-requests: write
@@ -49,13 +46,13 @@ jobs:
           languages: "javascript-typescript"
           queries: security-and-quality
 
-      - name: "Zainstaluj zależności"
-        run: npm install
-
       - name: Wykonaj analizę kodu
         uses: github/codeql-action/analyze@v3
         with:
           category: "language:javascript-typescript"
+
+      - name: "Zainstaluj zależności"
+        run: npm install
 
       - name: Uruchom testy
         id: test
