@@ -11,7 +11,7 @@ on:
 
 jobs:
   update-version:
-    if: github.event.name == 'push' && contains(github.ref, 'refs/heads/release/v')
+    if: github.event.created == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -26,7 +26,8 @@ jobs:
         id: get_version
         run: |
           BRANCH_NAME=${GITHUB_REF#refs/heads/release/}
-          echo "VERSION=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          CLEAN_BRANCH_NAME=${BRANCH_NAME#v}
+          echo "VERSION=$CLEAN_BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "Detected version: $BRANCH_NAME"
 
       - name: Update version in package.json
