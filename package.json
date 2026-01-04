@@ -1,6 +1,9 @@
 {
-  "name": "package-recipe",
-  "version": "1.0.0",
+  "name": "@gesiud/package-recipe",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "version": "1.0.3",
   "description": "",
   "homepage": "https://github.com/gesiud/package-recipe#readme",
   "bugs": {
