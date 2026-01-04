@@ -1,10 +1,46 @@
 name: Release
 
 on:
-  release:
-    types: [created]
+  create:
+  push:
+    branches:
+      - "release/v*.*"
+
+  # release:
+  #   types: [created]
 
 jobs:
+  update-version:
+    if: github.event.name == 'push' && contains(github.ref, 'refs/heads/release/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from the branches
+        id: get_version
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/release/}
+          echo "VERSION=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "Detected version: $BRANCH_NAME"
+
+      - name: Update version in package.json
+        run: |
+          npm version ${{ steps.get_version.outputs.VERSION }} --no-git-tag-version
+
+      - name: commit and push
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github.actions[bot]@users.noreplay.github.com"
+          git add package.json
+          git commit -m "chore: update package.json version to: ${{ steps.get_version.outputs.VERSION}}"
+          git push origin HEAD:${{ github.ref }}
+
   publish:
     runs-on: ubuntu-latest
     permissions:
