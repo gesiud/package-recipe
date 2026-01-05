@@ -2,46 +2,10 @@ name: Release
 
 on:
   create:
-  push:
-    branches:
-      - "release/v*.*"
-
-  # release:
-  #   types: [created]
+  release:
+    types: [created]
 
 jobs:
-  update-version:
-    if: github.event.created == true
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Extract version from the branches
-        id: get_version
-        run: |
-          BRANCH_NAME=${GITHUB_REF#refs/heads/release/}
-          CLEAN_BRANCH_NAME=${BRANCH_NAME#v}
-          echo "VERSION=$CLEAN_BRANCH_NAME" >> $GITHUB_OUTPUT
-          echo "Detected version: $BRANCH_NAME"
-
-      - name: Update version in package.json
-        run: |
-          npm version ${{ steps.get_version.outputs.VERSION }} --no-git-tag-version
-
-      - name: commit and push
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github.actions[bot]@users.noreplay.github.com"
-          git add package.json
-          git commit -m "chore: update package.json version to: ${{ steps.get_version.outputs.VERSION}}"
-          git push origin HEAD:${{ github.ref }}
-
   publish:
     runs-on: ubuntu-latest
     permissions:
@@ -56,7 +20,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
-          registry-url: "https://npm.pkg.github.com/"
+          registry-url: "https://npm.pkg.github.com"
           scope: "@gesiud"
 
       - name: Install dependencies
